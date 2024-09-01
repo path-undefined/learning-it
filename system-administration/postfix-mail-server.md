@@ -39,7 +39,7 @@ Since the Postfix reads the hostname of my server to identify itself while commu
 Use following command to see what the current hostname is:
 
 ```console
-# hostname -f
+$ hostname -f
 ```
 
 If it is not the one configured in the DNS record, I should do:
@@ -89,7 +89,7 @@ To send Email, I can use the `mail` command in the `mailutils` package in Ubuntu
 And then write a short mail:
 
 ```console
-user@mail:~$ mail -a FROM:<system-user-name>@digitao.io <gmail-user-name>@gmail.com
+$ mail -a FROM:<system-user-name>@digitao.io <gmail-user-name>@gmail.com
 Cc: 
 Subject: Test
 This Email is sent from a mail server setup by myself just now.
@@ -100,7 +100,7 @@ To send the Email, simply press `Ctrl+D`, and the mail will be found in the GMai
 To receive Email, simply type use mail command:
 
 ```console
-# mail
+$ mail
 ```
 
 It is interactive, so type `?` and `Enter` for a short command instructions. And some useful commands are:
