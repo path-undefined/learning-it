@@ -50,6 +50,10 @@ If it is not the one configured in the DNS record, I should do:
 
 ## Installation
 
+This is a basic installation guide for installing the postfix, the basic barebone mail server framework.
+
+### Basic Installation
+
 Update the server first:
 
 ```console
@@ -78,7 +82,7 @@ LISTEN 0      100          0.0.0.0:25        0.0.0.0:*    users:(("master",pid=2
 LISTEN 0      100             [::]:25           [::]:*    users:(("master",pid=2633,fd=14))
 ```
 
-## Send/Receive emails
+### Send/Receive test mails
 
 To send Email, I can use the `mail` command in the `mailutils` package in Ubuntu:
 
