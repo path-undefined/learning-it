@@ -4,11 +4,11 @@ _source: https://www.linuxbabe.com/mail-server/setup-basic-postfix-mail-sever-ub
 
 This article is a quick note about how to install, setup and manage a mail server using Postfix.
 
-## Prerequsites
+## 1. Prerequsites
 
 Before I even get to Postfix, there are a set of tasks that should be finished before.
 
-### Setup DNS
+### 1.1. Setup DNS
 
 The DNS records should look like this:
 
@@ -24,15 +24,15 @@ autodiscover.digitao.io    57600    CNAME           mail.digitao.io    # Optiona
 
 Basically the `A` record defines a new sub-domain `mail.digitao.io` pointing to the actual mail server. And the `MX` server forwards the mail request from the main domain `digitao.io` to the sub-domain `mail.digitao.io`. Of course if there is IPv6 Address, I should also setup `AAAA` record.
 
-### Setup the reverse DNS
+### 1.2. Setup the reverse DNS
 
 After DNS has been done, I went to the hosting server provider, and set the reverse DNS from the IP-Adress back to the domain name (`mail.digitao.io`).
 
-### Enable port 25 and 465
+### 1.3. Enable port 25 and 465
 
 This has to be done for both inbound and also outbound, otherwise either sending or recieving mails won't work. Note that the outbound rules sometimes are disabled by hosting service providers, so I have to create a service ticket for them to enable the 2 ports for me.
 
-### Change the hostname
+### 1.4. Change the hostname
 
 Since the Postfix reads the hostname of my server to identify itself while communicating with other MTA (message transfer agent), it is important to change the hostname to match the hostname in the DNS record:
 
@@ -48,11 +48,11 @@ If it is not the one configured in the DNS record, I should do:
 # hostnamectl set-hostname mail.digitao.io
 ```
 
-## Installation
+## 2. Installation
 
 This is a basic installation guide for installing the postfix, the basic barebone mail server framework.
 
-### Basic Installation
+### 2.1. Basic Installation
 
 Update the server first:
 
@@ -82,7 +82,7 @@ LISTEN 0      100          0.0.0.0:25        0.0.0.0:*    users:(("master",pid=2
 LISTEN 0      100             [::]:25           [::]:*    users:(("master",pid=2633,fd=14))
 ```
 
-### Send/Receive test mails
+### 2.2. Send/Receive test mails
 
 To send Email, I can use the `mail` command in the `mailutils` package in Ubuntu:
 
@@ -114,7 +114,7 @@ It is interactive, so type `?` and `Enter` for a short command instructions. And
 * `d 1`: Delete first mail
 * `q`: Quit mail program
 
-## Setup TLS Encryption and IMAP
+## 3. Setup TLS Encryption and IMAP
 
 Now there are 2 problems:
 
@@ -123,7 +123,7 @@ Now there are 2 problems:
 
 So this parts of the note provides a solution for these two problems.
 
-### Enable more ports in Firewall
+### 3.1. Enable more ports in Firewall
 
 To setup TLS and IMAP, I have to enable more ports:
 * `80` and `443` - to sign the TLS signature using certbot
@@ -132,7 +132,7 @@ To setup TLS and IMAP, I have to enable more ports:
 * `143` - for non-encrypted IMAP
 * `993` - for encrypted IMAP
 
-### Install Nginx and certbot
+### 3.2. Install Nginx and certbot
 
 Simply use following command to install Nginx:
 
@@ -140,7 +140,7 @@ Simply use following command to install Nginx:
 # apt install nginx
 ```
 
-### Install certbot
+### 3.3. Install certbot
 
 The suggested way of install certbot is using `snap`. For the servers from my hosting service provider, the `snap` is already preinstalled, so I don't need to install any extra pacakge at all. I can simply run:
 
@@ -148,7 +148,7 @@ The suggested way of install certbot is using `snap`. For the servers from my ho
 # snap install --classic certbot
 ```
 
-### Prepare Nginx for the SSL certificate challenge
+### 3.4. Prepare Nginx for the SSL certificate challenge
 
 Provide an Nginx site config like this:
 
@@ -169,7 +169,7 @@ server {
 
 And put it into `/etc/nginx/sites-enabled`, name the file as `mail.digitao.io`. For more information, please read [Nginx Administration](./nginx-administration.md).
 
-### Request a new certificate using certbot
+### 3.5. Request a new certificate using certbot
 
 Use the following command:
 
@@ -183,7 +183,7 @@ After the interactive script, the certificate files will be saved:
 * Certificate file: `/etc/letsencrypt/live/mail.digitao.io/fullchain.pem`
 * Key file: `/etc/letsencrypt/live/mail.digitao.io/privkey.pem`
 
-### Setup SMTP
+### 3.6. Setup SMTP
 
 **Deeper understanding required ...**
 
@@ -247,7 +247,7 @@ LISTEN 0      100             [::]:465          [::]:*    users:(("master",pid=1
 LISTEN 0      100             [::]:587          [::]:*    users:(("master",pid=12881,fd=19))
 ```
 
-### Install and setup Dovecot to enable IMAP
+### 3.7. Install and setup Dovecot to enable IMAP
 
 **Deeper understanding required ...**
 
@@ -396,7 +396,7 @@ LISTEN 0      100             [::]:143          [::]:*    users:(("dovecot",pid=
 LISTEN 0      100             [::]:993          [::]:*    users:(("dovecot",pid=18756,fd=39))
 ```
 
-### Create user for mail
+### 3.8. Create user for mail
 
 Postfix will use the system users as Email users. So create a user like this:
 
@@ -409,7 +409,7 @@ Postfix will use the system users as Email users. So create a user like this:
 
 This will create the home directory for the user (the mails are being stored in the `~/Maildir` folder).
 
-## Use MUA to connect to the server
+## 4. Use MUA to connect to the server
 
 Using following data to setup the Mail Client:
 
@@ -432,7 +432,7 @@ Security: STARTTLS
 Authentication Method: Normal password
 ```
 
-## Setup SPF
+## 5. Setup SPF
 
 To send Email to an GMail address, I have to setup either SPF or DKIM. Since SPF is easier than DKIM, so I will only setup SPF for the moment.
 
