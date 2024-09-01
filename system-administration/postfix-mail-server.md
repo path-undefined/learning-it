@@ -110,3 +110,37 @@ It is interactive, so type `?` and `Enter` for a short command instructions. And
 * `d 1`: Delete first mail
 * `q`: Quit mail program
 
+## Setup TLS Encryption and IMAP
+
+Now there are 2 problems:
+
+1. All the Emails are transmitted in Internet in clear text;
+2. I cannot use and mail client to connect to the server.
+
+So this parts of the note provides a solution for these two problems.
+
+### Enable more ports in Firewall
+
+To setup TLS and IMAP, I have to enable more ports:
+* `80` and `443` - to sign the TLS signature using certbot
+* `587` - for encrypted SMTP
+* `465` - for encrypted SMTP (deprecated)
+* `143` - for non-encrypted IMAP
+* `993` - for encrypted IMAP
+
+### Install Nginx and certbot
+
+Simply use following command to install Nginx:
+
+```conosle
+# apt install nginx
+```
+
+### Install certbot
+
+The suggested way of install certbot is using `snap`. For the servers from my hosting service provider, the `snap` is already preinstalled, so I don't need to install any extra pacakge at all. I can simply run:
+
+```console
+# snap install --classic certbot
+```
+
